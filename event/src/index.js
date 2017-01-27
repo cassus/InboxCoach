@@ -84,7 +84,7 @@ store.subscribe(function updateIconOnStateChange() {
   chrome.browserAction.setIcon({path})
 })
 
-function updateBadge() {
+function updateBadge({disableDispatch = false} = {}) {
   const {activeItem, inboxItems} = store.getState()
   const now = new Date()
 
@@ -111,9 +111,10 @@ function updateBadge() {
   }
 
 
-  if (TIME_LIMIT <= timeSpent && timeSpent < TIME_LIMIT + 1) {
+  if (disableDispatch !== true && TIME_LIMIT <= timeSpent && timeSpent < TIME_LIMIT + 1) {
     store.dispatch(timeUpAction())
   }
-
 }
+
 setInterval(updateBadge, 1000)
+store.subscribe(() => updateBadge({disableDispatch: true}))
