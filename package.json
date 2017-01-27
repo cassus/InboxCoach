@@ -9,6 +9,7 @@
   },
   "author": "Adam Banko",
   "dependencies": {
+    "chrome-webstore-upload-cli": "^1.1.1",
     "react": "^0.14.3",
     "react-chrome-redux": "0.0.7",
     "react-dom": "^0.14.3",
