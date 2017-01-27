@@ -85,12 +85,14 @@ store.subscribe(function updateIconOnStateChange() {
 })
 
 function updateBadge({disableDispatch = false} = {}) {
-  const {activeItem, inboxItems} = store.getState()
+  const {activeItem, inboxItems, tracking} = store.getState()
   const now = new Date()
 
-  if (!activeItem) {
+  if (!activeItem || !tracking) {
+    chrome.browserAction.setBadgeText({text: ''})
     return
   }
+
   const {url, loadedAt} = activeItem
 
   if (!inboxItems[url]) {
