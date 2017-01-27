@@ -17,8 +17,11 @@ function initializeInboxItemOnFirstOccurrence(state, url, title) {
 export default (state = initialState, action) => {
   switch (action.type) {
     case 'START_TRACKING': {
+      // Reset counters and initialize with first item on the active tab
+
       const {url, title} = action.tab
 
+      state = initialState
       state = initializeInboxItemOnFirstOccurrence(state, url, title);
 
       return state;

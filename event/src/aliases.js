@@ -14,7 +14,8 @@ const INITIATE_TRACKING = (orginalAction) => (dispatch) => {
 
     dispatch({
       type: 'START_TRACKING',
-      tab: tabs[0]
+      tab: tabs[0],
+      now: new Date(),
     })
   })
 
