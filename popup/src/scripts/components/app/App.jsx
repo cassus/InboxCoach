@@ -3,49 +3,66 @@ import {connect} from 'react-redux';
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.state = {}
   }
 
   render() {
     return (
       <div>
-        <div style={{"display": 'flex', "flex-direction": "row", "justify-content": "flex-end"}}>
+        <div style={{display: 'flex', flexDirection: "row", justifyContent: "flex-end"}}>
           {this.props.tracking
             ?
             <button onClick={() => this.props.stopAction()}>Stop</button>
             :
-            <button onClick={() => this.props.startAction()}>Start</button>
+            <div>
+              <button onClick={() => this.props.startAction(this.state.timeLimit || this.props.defaultTimeLimit)}>
+                Start
+              </button>
+              with
+              <input
+                type="text"
+                style={{"width": 20}}
+                value={this.state.timeLimit || this.props.defaultTimeLimit}
+                onChange={(e) => (this.setState({timeLimit: e.target.value}))}
+              />
+              seconds limit
+            </div>
           }
         </div>
         <pre>
           {JSON.stringify(this.props.state, null, 2)}
         </pre>
       </div>
-    );
+    )
   }
 
 }
 
-function startAction() {
+function startAction(timeLimit) {
   return {
     type: 'INITIATE_TRACKING',
-  };
+    timeLimit
+  }
 }
 
 function stopAction() {
   return {
     type: 'STOP_TRACKING',
-  };
+  }
 }
 
-const mapStateToProps = (state) => ({
-  state: state,
-  tracking: state.tracking
-})
+const mapStateToProps = (state) => {
+  return {
+    state: state,
+    tracking: state.tracking,
+    defaultTimeLimit: state.settings && state.settings.timeLimit || 0,
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
-  startAction: () => dispatch(startAction()),
+  startAction: (timeLimit) => dispatch(startAction(timeLimit)),
   stopAction: () => dispatch(stopAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App)

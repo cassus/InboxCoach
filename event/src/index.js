@@ -6,9 +6,18 @@ import rootReducer from './reducers'
 import aliases from './aliases';
 
 
+const logger = store => next => action => {
+  console.debug('dispatching', action.type, action)
+  const result = next(action)
+//  console.log('middleware result (orig)', result)
+  console.debug('next state', store.getState())
+  return result
+}
+
 const middlewares = [
+  logger,
   alias(aliases),
-  thunk
+  thunk,
 ];
 
 const store = createStore(rootReducer, applyMiddleware(...middlewares))
@@ -16,8 +25,6 @@ const store = createStore(rootReducer, applyMiddleware(...middlewares))
 wrapStore(store, {
   portName: 'port-6tbx4n2UxrcL'
 })
-
-const TIME_LIMIT = 10
 
 function tabLoadedAction(tabId, changeInfo, tab) {
   const lastActiveItem = store.getState()['activeItem']
@@ -85,8 +92,9 @@ store.subscribe(function updateIconOnStateChange() {
 })
 
 function updateBadge({disableDispatch = false} = {}) {
-  const {activeItem, inboxItems, tracking} = store.getState()
+  const {activeItem, inboxItems, tracking, settings} = store.getState()
   const now = new Date()
+  const {timeLimit} = settings
 
   if (!activeItem || !tracking) {
     chrome.browserAction.setBadgeText({text: ''})
@@ -100,20 +108,22 @@ function updateBadge({disableDispatch = false} = {}) {
   }
   const secondsSpentBefore = inboxItems[url].secondsSpent
   const secondsSpentNow = Math.round((now.getTime() - loadedAt.getTime()) / 1000)
-
-
   const timeSpent = (secondsSpentBefore + secondsSpentNow);
-  let badgeText = (timeSpent).toString() + "s"
-  chrome.browserAction.setBadgeText({text: badgeText})
 
-  if (TIME_LIMIT <= timeSpent) {
-    chrome.browserAction.setBadgeBackgroundColor({color: 'red'})
-  } else {
-    chrome.browserAction.setBadgeBackgroundColor({color: 'green'})
-  }
+  chrome.browserAction.setBadgeText({
+    text: timeSpent.toString() + "s"
+  })
 
+  chrome.browserAction.setBadgeBackgroundColor({
+    color: (timeSpent < (timeLimit * 0.8) // turn yellow for the last 20%
+      ? 'green'
+      : timeSpent < timeLimit
+        ? [232, 201, 19, 255] // deep-yellow
+        : 'red')
+  })
 
-  if (disableDispatch !== true && TIME_LIMIT <= timeSpent && timeSpent < TIME_LIMIT + 1) {
+  if (disableDispatch !== true && timeLimit <= timeSpent && timeSpent < (timeLimit + 1)) {
+    console.warn(timeLimit, timeSpent, timeLimit <= timeSpent, timeSpent < (timeLimit + 1), (timeLimit + 1))
     store.dispatch(timeUpAction())
   }
 }
