@@ -9,12 +9,14 @@ class App extends Component {
   render() {
     return (
       <div>
-        {this.props.tracking
-          ?
-          <button onClick={() => this.props.stopAction()}>Stop</button>
-          :
-          <button onClick={() => this.props.startAction()}>Start</button>
-        }
+        <div style={{"display": 'flex', "flex-direction": "row", "justify-content": "flex-end"}}>
+          {this.props.tracking
+            ?
+            <button onClick={() => this.props.stopAction()}>Stop</button>
+            :
+            <button onClick={() => this.props.startAction()}>Start</button>
+          }
+        </div>
         <pre>
           {JSON.stringify(this.props.state, null, 2)}
         </pre>
