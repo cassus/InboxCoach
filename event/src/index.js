@@ -123,7 +123,6 @@ function updateBadge({disableDispatch = false} = {}) {
   })
 
   if (disableDispatch !== true && timeLimit <= timeSpent && timeSpent < (timeLimit + 1)) {
-    console.warn(timeLimit, timeSpent, timeLimit <= timeSpent, timeSpent < (timeLimit + 1), (timeLimit + 1))
     store.dispatch(timeUpAction())
   }
 }
