@@ -34,9 +34,9 @@ class App extends Component {
             </div>
           }
         </div>
-        <pre>
+        {/*<pre>
           {JSON.stringify(this.props.state, null, 2)}
-        </pre>
+        </pre>*/}
       </div>
     )
   }
