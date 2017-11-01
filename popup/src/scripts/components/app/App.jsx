@@ -11,7 +11,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{width: 200, height: 200}}>
         <div style={{display: 'flex', flexDirection: "row", justifyContent: "flex-end"}}>
           {this.props.tracking
             ?
