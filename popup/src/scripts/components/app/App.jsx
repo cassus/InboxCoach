@@ -11,20 +11,22 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{width: 200, height: 200}}>
-        <div style={{display: 'flex', flexDirection: "row", justifyContent: "flex-end"}}>
-          {this.props.tracking
-            ?
-            <button onClick={() => this.props.stopAction()}>Stop</button>
-            :
+      <div style={{fontSize: 20}}>
+        {this.props.tracking
+          ?
+          <button onClick={() => this.props.stopAction()}>Stop</button>
+          :
+          <div style={{width: 200, height: 100, display: 'flex', flexDirection: "column", alignItems: "flex-end", justifyContent: "space-evenly"}}>
             <div>
-              <button onClick={() => this.props.startAction(this.state.timeLimit || this.props.defaultTimeLimit)}>
+              <button style={{fontSize: 20}} onClick={() => this.props.startAction(this.state.timeLimit || this.props.defaultTimeLimit)}>
                 Start
               </button>
+            </div>
+            <div>
               with
               <input
                 type="text"
-                style={{"width": 20}}
+                style={{"width": 35, fontSize: 20, margin: 5}}
                 value={this.state.timeLimit === 'default'
                   ? this.props.defaultTimeLimit
                   : this.state.timeLimit}
@@ -32,8 +34,8 @@ class App extends Component {
               />
               seconds limit
             </div>
-          }
-        </div>
+          </div>
+        }
         {/*<pre>
           {JSON.stringify(this.props.state, null, 2)}
         </pre>*/}
