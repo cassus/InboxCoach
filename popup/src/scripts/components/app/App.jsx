@@ -4,7 +4,9 @@ import {connect} from 'react-redux';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      timeLimit: 'default'
+    }
   }
 
   render() {
@@ -23,7 +25,9 @@ class App extends Component {
               <input
                 type="text"
                 style={{"width": 20}}
-                value={this.state.timeLimit || this.props.defaultTimeLimit}
+                value={this.state.timeLimit === 'default'
+                  ? this.props.defaultTimeLimit
+                  : this.state.timeLimit}
                 onChange={(e) => (this.setState({timeLimit: e.target.value}))}
               />
               seconds limit
