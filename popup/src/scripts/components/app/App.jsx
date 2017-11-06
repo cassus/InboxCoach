@@ -5,8 +5,14 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      timeLimit: 'default'
+      _timeLimit: 'default' // access with this.getTimeLimit()
     }
+  }
+
+  getTimeLimit() {
+    return this.state._timeLimit === 'default'
+    ? this.props.defaultTimeLimit
+    : this.state._timeLimit
   }
 
   render() {
@@ -14,11 +20,14 @@ class App extends Component {
       <div style={{fontSize: 20}}>
         {this.props.tracking
           ?
-          <button onClick={() => this.props.stopAction()}>Stop</button>
+          <div>
+            <button onClick={() => this.props.stopAction()}>Stop</button>
+            {this.getTimeLimit()} seconds limit
+          </div>
           :
           <div style={{width: 200, height: 100, display: 'flex', flexDirection: "column", alignItems: "flex-end", justifyContent: "space-evenly"}}>
             <div>
-              <button style={{fontSize: 20}} onClick={() => this.props.startAction(this.state.timeLimit || this.props.defaultTimeLimit)}>
+              <button style={{fontSize: 20}} onClick={() => this.props.startAction(this.getTimeLimit())}>
                 Start
               </button>
             </div>
@@ -27,10 +36,8 @@ class App extends Component {
               <input
                 type="text"
                 style={{"width": 35, fontSize: 20, margin: 5}}
-                value={this.state.timeLimit === 'default'
-                  ? this.props.defaultTimeLimit
-                  : this.state.timeLimit}
-                onChange={(e) => (this.setState({timeLimit: e.target.value}))}
+                value={this.getTimeLimit()}
+                onChange={(e) => (this.setState({_timeLimit: e.target.value}))}
               />
               seconds limit
             </div>
