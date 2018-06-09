@@ -10,6 +10,10 @@ class App extends Component {
     }
   }
 
+  componentDidMount() {
+    this.timeInput.focus()
+ }
+
   getTimeLimit() {
     return this.state._timeLimit === 'default'
     ? this.props.defaultTimeLimit
@@ -50,6 +54,9 @@ class App extends Component {
                 value={this.getTimeLimit()}
                 onChange={(e) => this.setState({_timeLimit: e.target.value})}
                 onKeyPress={(e) => this.handleKeyPress(e)}
+                ref={(input) => {
+                  this.timeInput = input
+                }}
               />
               seconds limit
             </div>
