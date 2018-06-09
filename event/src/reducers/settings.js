@@ -1,4 +1,4 @@
-const initialState = {timeLimit: 120};
+const initialState = {timeLimit: '2'}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -6,10 +6,10 @@ export default (state = initialState, action) => {
       const {timeLimit} = action
 
       return {
-        timeLimit: Number.parseInt(timeLimit, 10)
-      };
+        timeLimit: timeLimit
+      }
 
     default:
-      return state;
+      return state
   }
-};
+}

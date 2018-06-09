@@ -1,24 +1,28 @@
 import {createStore, applyMiddleware} from 'redux'
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk'
 import {wrapStore, alias} from 'react-chrome-redux'
 
+
 import rootReducer from './reducers'
-import aliases from './aliases';
+import aliases from './aliases'
+import {timeLimitStringToSeconds} from '../../common/common'
 
 
-const logger = store => next => action => {
+const logger = (store) => (next) => (action) => {
   console.debug('dispatching', action.type, action)
   const result = next(action)
 //  console.log('middleware result (orig)', result)
+
   console.debug('next state', store.getState())
+
   return result
 }
 
 const middlewares = [
   logger,
   alias(aliases),
-  thunk,
-];
+  thunk
+]
 
 const store = createStore(rootReducer, applyMiddleware(...middlewares))
 
@@ -38,21 +42,22 @@ function tabLoadedAction(tabId, changeInfo, tab) {
     lastActiveItem,
     tracking,
     now: new Date()
-  };
+  }
 }
 
 function timeUpAction() {
   const lastActiveItem = store.getState()['activeItem']
 
   const myAudio = new Audio()
-  myAudio.src = "solemn.mp3"
+
+  myAudio.src = 'solemn.mp3'
   myAudio.play()
 
   return {
     type: 'TIME_UP',
     lastActiveItem,
     now: new Date()
-  };
+  }
 }
 
 
@@ -72,13 +77,13 @@ chrome.tabs.onActivated.addListener(({tabId, windowId}) => {
   store.dispatch({
     type: 'TAB_ACTIVATED',
     tabId,
-    windowId,
+    windowId
   })
 
 })
 
 store.subscribe(function updateIconOnStateChange() {
-  const {tracking, currentTab} = store.getState();
+  const {tracking, currentTab} = store.getState()
 
   const path = (
     tracking &&
@@ -86,18 +91,26 @@ store.subscribe(function updateIconOnStateChange() {
     currentTab.windowId === tracking.windowId
       ? 'purple.png'
       : 'grey.png'
-  )
+    )
 
   chrome.browserAction.setIcon({path})
 })
 
+function secondsToMinutesString(seconds) {
+  const minutes = seconds / 60
+  const minutesStr = minutes.toFixed(1)
+
+  return `${minutesStr}m`
+}
+
 function updateBadge({disableDispatch = false} = {}) {
   const {activeItem, inboxItems, tracking, settings} = store.getState()
   const now = new Date()
-  const {timeLimit} = settings
+  const timeLimitSeconds = timeLimitStringToSeconds(settings.timeLimit)
 
   if (!activeItem || !tracking) {
     chrome.browserAction.setBadgeText({text: ''})
+
     return
   }
 
@@ -108,21 +121,21 @@ function updateBadge({disableDispatch = false} = {}) {
   }
   const secondsSpentBefore = inboxItems[url].secondsSpent
   const secondsSpentNow = Math.round((now.getTime() - loadedAt.getTime()) / 1000)
-  const timeSpent = (secondsSpentBefore + secondsSpentNow);
+  const timeSpent = secondsSpentBefore + secondsSpentNow
 
   chrome.browserAction.setBadgeText({
-    text: timeSpent.toString() + "s"
+    text: secondsToMinutesString(timeSpent)
   })
 
   chrome.browserAction.setBadgeBackgroundColor({
-    color: (timeSpent < (timeLimit * 0.8) // turn yellow for the last 20%
+    color: timeSpent < (timeLimitSeconds * 0.8) // turn yellow for the last 20%
       ? 'green'
-      : timeSpent < timeLimit
+      : timeSpent < timeLimitSeconds
         ? [232, 201, 19, 255] // deep-yellow
-        : 'red')
+        : 'red'
   })
 
-  if (disableDispatch !== true && timeLimit <= timeSpent && timeSpent < (timeLimit + 1)) {
+  if (disableDispatch !== true && timeLimitSeconds <= timeSpent && timeSpent < timeLimitSeconds + 1) {
     store.dispatch(timeUpAction())
   }
 }

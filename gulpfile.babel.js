@@ -46,8 +46,8 @@ gulp.task('clean', (cb) => {
 gulp.task('build', ['copy', 'popup-js', 'popup-html', 'event-js']);
 
 gulp.task('watch', ['default'], () => {
-  gulp.watch('popup/**/*', ['build']);
-  gulp.watch('event/**/*', ['build']);
+  gulp.watch(['popup/**/*', 'common/**'], ['build']);
+  gulp.watch(['event/**/*', 'common/**'], ['build']);
 });
 
 gulp.task('default', ['build']);

@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {timeLimitStringToMinutes} from '../../../../../common/common'
 
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      _timeLimit: 'default' // access with this.getTimeLimit()
+      _timeLimit: 'default' // access with this.getTimeLimitString()
     }
   }
 
@@ -14,7 +15,7 @@ class App extends Component {
     this.timeInput.focus()
  }
 
-  getTimeLimit() {
+  getTimeLimitString() { // in minutes
     return this.state._timeLimit === 'default'
     ? this.props.defaultTimeLimit
     : this.state._timeLimit
@@ -27,7 +28,7 @@ class App extends Component {
   }
 
   start() {
-    this.props.startAction(this.getTimeLimit())
+    this.props.startAction(this.getTimeLimitString())
   }
 
   render() {
@@ -37,7 +38,7 @@ class App extends Component {
           ?
           <div>
             <button onClick={() => this.props.stopAction()}>Stop</button>
-            {this.getTimeLimit()} seconds limit
+            {this.getTimeLimitString()} minutes limit
           </div>
           :
           <div style={{width: 200, height: 100, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-evenly'}}>
@@ -47,18 +48,19 @@ class App extends Component {
               </button>
             </div>
             <div>
-              with
+              Limit:
               <input
                 type="text"
                 style={{'width': 35, fontSize: 20, margin: 5}}
-                value={this.getTimeLimit()}
+                value={this.getTimeLimitString()}
                 onChange={(e) => this.setState({_timeLimit: e.target.value})}
                 onKeyPress={(e) => this.handleKeyPress(e)}
                 ref={(input) => {
                   this.timeInput = input
                 }}
               />
-              seconds limit
+              <br />
+              = {timeLimitStringToMinutes(this.getTimeLimitString()).toFixed(1)} minutes
             </div>
           </div>
         }
