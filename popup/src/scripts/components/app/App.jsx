@@ -16,6 +16,16 @@ class App extends Component {
     : this.state._timeLimit
   }
 
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.start()
+    }
+  }
+
+  start() {
+    this.props.startAction(this.getTimeLimit())
+  }
+
   render() {
     return (
       <div style={{fontSize: 20}}>
@@ -28,7 +38,7 @@ class App extends Component {
           :
           <div style={{width: 200, height: 100, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-evenly'}}>
             <div>
-              <button style={{fontSize: 20}} onClick={() => this.props.startAction(this.getTimeLimit())}>
+              <button style={{fontSize: 20}} onClick={() => this.start()}>
                 Start
               </button>
             </div>
@@ -39,6 +49,7 @@ class App extends Component {
                 style={{'width': 35, fontSize: 20, margin: 5}}
                 value={this.getTimeLimit()}
                 onChange={(e) => this.setState({_timeLimit: e.target.value})}
+                onKeyPress={(e) => this.handleKeyPress(e)}
               />
               seconds limit
             </div>
