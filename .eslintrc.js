@@ -23,6 +23,7 @@ module.exports = {
   rules: {
     "no-case-declarations": "off",
     "react/prop-types": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "no-unused-vars": ["error", { varsIgnorePattern: "_" }]
   }
 }
