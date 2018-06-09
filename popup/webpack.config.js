@@ -25,7 +25,7 @@ module.exports = {
           path.join(__dirname, "..", "common")
         ],
         query: {
-          presets: ["es2015", "react"]
+          presets: ["env", "react"]
         }
       }
     ]
