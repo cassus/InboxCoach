@@ -1,33 +1,33 @@
-const path = require('path');
+const path = require("path")
 
 module.exports = {
-
-  entry: [
-    './event/src/index.js'
-  ],
+  entry: ["./event/src/index.js"],
 
   output: {
-    filename: 'event.js',
-    path: path.join(__dirname, '../', 'build')
+    filename: "event.js",
+    path: path.join(__dirname, "../", "build")
   },
 
   resolve: {
-    extensions: ['', '.js', '.json'],
-    modulesDirectories: ['node_modules']
+    extensions: ["", ".js", ".json"],
+    modulesDirectories: ["node_modules"]
   },
 
   module: {
     loaders: [
       {
         test: /\.(js)?$/,
-        loader: 'babel',
+        loader: "babel",
         exclude: /(node_modules)/,
-        include: [path.join(__dirname, 'src'), path.join(__dirname, '..', 'common')],
+        include: [
+          path.join(__dirname, "src"),
+          path.join(__dirname, "..", "common")
+        ],
         query: {
-          presets: ['es2015', 'react'],
-          plugins: ['transform-object-rest-spread']
+          presets: ["es2015", "react"],
+          plugins: ["transform-object-rest-spread"]
         }
       }
     ]
   }
-};
+}

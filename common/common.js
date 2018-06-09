@@ -1,5 +1,5 @@
 export function timeLimitStringToMinutes(str) {
-  return Number(String(str).replace(/,/g, '.'))
+  return Number(String(str).replace(/,/g, "."))
 }
 
 export function timeLimitStringToSeconds(str) {

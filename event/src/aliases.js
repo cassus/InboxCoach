@@ -1,17 +1,17 @@
 const INITIATE_TRACKING = originalAction => dispatch => {
-  const {timeLimit} = originalAction
+  const { timeLimit } = originalAction
 
-  const query = {currentWindow: true, active: true}
-  chrome.tabs.query(query, (tabs) => {
+  const query = { currentWindow: true, active: true }
+  chrome.tabs.query(query, tabs => {
     if (tabs.length !== 1) {
-      console.error('tabs.length !== 1', tabs.length)
+      console.error("tabs.length !== 1", tabs.length)
     }
 
     dispatch({
-      type: 'START_TRACKING',
+      type: "START_TRACKING",
       timeLimit,
       tab: tabs[0],
-      now: new Date(),
+      now: new Date()
     })
   })
 }

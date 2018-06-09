@@ -1,5 +1,5 @@
 const initialState = {}
-const inboxItemDefaultState = {title: 'UNKNOWN', secondsSpent: 0}
+const inboxItemDefaultState = { title: "UNKNOWN", secondsSpent: 0 }
 
 function initializeInboxItemOnFirstOccurrence(state, url, title) {
   if (!state[url]) {
@@ -7,46 +7,56 @@ function initializeInboxItemOnFirstOccurrence(state, url, title) {
       ...state,
       [url]: {
         ...inboxItemDefaultState,
-        title,
-      },
+        title
+      }
     }
   }
-  return state;
+  return state
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'START_TRACKING': {
+    case "START_TRACKING": {
       // Reset counters and initialize with first item on the active tab
 
-      const {url, title} = action.tab
+      const { url, title } = action.tab
 
       state = initialState
-      state = initializeInboxItemOnFirstOccurrence(state, url, title);
+      state = initializeInboxItemOnFirstOccurrence(state, url, title)
 
-      return state;
+      return state
     }
 
-    case 'TAB_LOADED': {
-      const {tabId, changeInfo, tab, now, tracking, lastActiveItem:blurredItemInfo} = action
-      const {url, title} = tab
+    case "TAB_LOADED": {
+      const {
+        tabId,
+        changeInfo,
+        tab,
+        now,
+        tracking,
+        lastActiveItem: blurredItemInfo
+      } = action
+      const { url, title } = tab
 
-      console.log('TAB_LOADED', {url, title})
+      console.log("TAB_LOADED", { url, title })
 
-      state = initializeInboxItemOnFirstOccurrence(state, url, title);
+      state = initializeInboxItemOnFirstOccurrence(state, url, title)
 
       if (tracking && tracking.tabId === tab.id) {
-
         if (blurredItemInfo) {
           const blurredUrl = blurredItemInfo.url
 
           state = {
             ...state,
-            [blurredUrl]: blurredInboxItem(state[blurredUrl], blurredItemInfo, now),
+            [blurredUrl]: blurredInboxItem(
+              state[blurredUrl],
+              blurredItemInfo,
+              now
+            )
           }
         }
 
-        console.log('state', state)
+        console.log("state", state)
       } else {
         //console.log('ignored TAB_LOADED from non-tracked tab')
       }
@@ -60,11 +70,13 @@ export default (state = initialState, action) => {
 function blurredInboxItem(state, blurredItemInfo, now) {
   const blurredWasLoadedAt = blurredItemInfo.loadedAt
 
-  const secondsSpent = Math.round((now.getTime() - blurredWasLoadedAt.getTime()) / 1000)
+  const secondsSpent = Math.round(
+    (now.getTime() - blurredWasLoadedAt.getTime()) / 1000
+  )
   const prevInboxItem = state || inboxItemDefaultState
 
   return {
     ...prevInboxItem,
-    secondsSpent: prevInboxItem.secondsSpent + secondsSpent,
+    secondsSpent: prevInboxItem.secondsSpent + secondsSpent
   }
 }

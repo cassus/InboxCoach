@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/gulp build",
-    "watch": "./node_modules/.bin/gulp watch"
+    "watch": "./node_modules/.bin/gulp watch",
+    "precommit": "pretty-quick --staged"
   },
   "author": "Adam Banko",
   "dependencies": {
@@ -27,11 +28,15 @@
     "babel-preset-es2015": "^6.0.15",
     "babel-preset-react": "^6.0.15",
     "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-react": "^7.9.1",
     "gulp": "^3.9.0",
     "gulp-load-plugins": "^1.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.7",
+    "husky": "^0.14.3",
+    "prettier": "1.13.5",
+    "pretty-quick": "^1.6.0",
     "rimraf": "^2.5.0",
     "webpack": "^1.12.11"
   }

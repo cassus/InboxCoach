@@ -5,14 +5,10 @@
   "icons": {
     "128": "grey.png"
   },
-  "version": "0.0.11",
-  "permissions": [
-    "tabs"
-  ],
+  "version": "0.0.12",
+  "permissions": ["tabs"],
   "background": {
-    "scripts": [
-      "event.js"
-    ],
+    "scripts": ["event.js"],
     "persistent": true
   },
   "browser_action": {
