@@ -113,20 +113,22 @@ function updateActiveIcon(timeSpent, timeLimitSeconds) {
   const text = secondsToMinutesString(timeSpent)
   const bgColor = backgroundColor(timeSpent, timeLimitSeconds)
 
+  const size = 32
+
   context.fillStyle = bgColor
-  context.fillRect(0, 0, 19, 19)
+  context.fillRect(0, 0, size - 1, size - 1)
 
   context.fillStyle = 'white'
   context.textAlign = 'center'
   context.textBaseline = 'middle'
-  context.font = '18px Arial'
-  context.fillText(text, 9.5, 9.5)
+  context.font = `${size - 2}px Arial`
+  context.fillText(text, (size - 1) / 2, (size - 1) / 2)
 
   chrome.browserAction.setIcon({
-    imageData: context.getImageData(0, 0, 19, 19)
+    imageData: {
+      [size]: context.getImageData(0, 0, size - 1, size - 1)}
   })
 }
-
 
 function updateIcon({disableDispatch = false} = {}) {
   const {activeItem, inboxItems, tracking, settings} = store.getState()
