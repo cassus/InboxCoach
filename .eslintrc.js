@@ -4,7 +4,12 @@ module.exports = {
     es6: true,
     webextensions: true
   },
-  extends: ["prettier", "plugin:react/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/react"
+  ],
   parserOptions: {
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
