@@ -82,34 +82,60 @@ chrome.tabs.onActivated.addListener(({tabId, windowId}) => {
 
 })
 
-store.subscribe(function updateIconOnStateChange() {
-  const {tracking, currentTab} = store.getState()
-
-  const path = (
-    tracking &&
-    currentTab.tabId === tracking.tabId &&
-    currentTab.windowId === tracking.windowId
-      ? 'purple.png'
-      : 'grey.png'
-    )
-
-  chrome.browserAction.setIcon({path})
-})
-
-function secondsToMinutesString(seconds) {
-  const minutes = seconds / 60
-  const minutesStr = minutes.toFixed(1)
-
-  return `${minutesStr}m`
+function resetIcon() {
+  chrome.browserAction.setIcon({path: 'grey.png'})
 }
 
-function updateBadge({disableDispatch = false} = {}) {
+const canvas = document.createElement('canvas')
+
+function backgroundColor(timeSpent, timeLimitSeconds) {
+  if (timeSpent < (timeLimitSeconds * 0.8)) {
+    return 'green'
+  }
+  if (timeSpent < timeLimitSeconds) {
+    return 'rgb(232, 201, 19)' // deep-yellow
+  }
+  if (timeSpent < timeLimitSeconds * 2) {
+    return 'red'
+  }
+
+  return 'black'
+}
+
+function secondsToMinutesString(seconds) {
+  const minutes = Math.floor(seconds / 60)
+
+  return minutes.toFixed(0)
+}
+
+function updateActiveIcon(timeSpent, timeLimitSeconds) {
+  const context = canvas.getContext('2d')
+  const text = secondsToMinutesString(timeSpent)
+  const bgColor = backgroundColor(timeSpent, timeLimitSeconds)
+
+  context.fillStyle = bgColor
+  context.fillRect(0, 0, 19, 19)
+
+  context.fillStyle = 'white'
+  context.textAlign = 'center'
+  context.textBaseline = 'middle'
+  context.font = '18px Arial'
+  context.fillText(text, 9.5, 9.5)
+
+  chrome.browserAction.setIcon({
+    imageData: context.getImageData(0, 0, 19, 19)
+  })
+}
+
+
+function updateIcon({disableDispatch = false} = {}) {
   const {activeItem, inboxItems, tracking, settings} = store.getState()
   const now = new Date()
   const timeLimitSeconds = timeLimitStringToSeconds(settings.timeLimit)
 
+
   if (!activeItem || !tracking) {
-    chrome.browserAction.setBadgeText({text: ''})
+    resetIcon()
 
     return
   }
@@ -123,22 +149,13 @@ function updateBadge({disableDispatch = false} = {}) {
   const secondsSpentNow = Math.round((now.getTime() - loadedAt.getTime()) / 1000)
   const timeSpent = secondsSpentBefore + secondsSpentNow
 
-  chrome.browserAction.setBadgeText({
-    text: secondsToMinutesString(timeSpent)
-  })
-
-  chrome.browserAction.setBadgeBackgroundColor({
-    color: timeSpent < (timeLimitSeconds * 0.8) // turn yellow for the last 20%
-      ? 'green'
-      : timeSpent < timeLimitSeconds
-        ? [232, 201, 19, 255] // deep-yellow
-        : 'red'
-  })
+  updateActiveIcon(timeSpent, timeLimitSeconds)
 
   if (disableDispatch !== true && timeLimitSeconds <= timeSpent && timeSpent < timeLimitSeconds + 1) {
     store.dispatch(timeUpAction())
   }
 }
 
-setInterval(updateBadge, 1000)
-store.subscribe(() => updateBadge({disableDispatch: true}))
+setInterval(updateIcon, 1000)
+store.subscribe(() => updateIcon({disableDispatch: true}))
+

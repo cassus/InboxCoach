@@ -5,7 +5,7 @@
   "icons": {
     "128": "grey.png"
   },
-  "version": "0.0.9",
+  "version": "0.0.10",
   "permissions": [
     "tabs"
   ],

@@ -44,7 +44,7 @@ module.exports = {
         "curly": "error",
         "default-case": "error",
         "dot-location": "error",
-        "dot-notation": "error",
+        "dot-notation": "off",
         "eol-last": "error",
         "eqeqeq": "error",
         "for-direction": "error",
